@@ -2,8 +2,28 @@
  // var es para aumentar la compatibilidad entre diferentes navegadores web
  var socket = io();
 
+ //  Obteniendo parametros de la url
+ var params = new URLSearchParams(window.location.search);
+
+ if (!params.has('nombre')) {
+
+     window.location = 'index.html';
+
+     throw new Error('El nombre es necesario');
+ }
+
+ var usuario = {
+     nombre: params.get('nombre')
+ };
+
  socket.on('connect', function() {
      console.log('Conectado al servidor');
+
+     //  Enviando información de usuaruo al server
+     socket.emit('entrarChat', usuario, function(resp) {
+         console.log('Usuarios conectados', resp);
+     });
+
  });
 
  // on es para escuchar información
