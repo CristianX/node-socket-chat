@@ -57,4 +57,4 @@
  //  Mensajes privados
  socket.on('mensajePrivado', function(mensaje) {
      console.log('Mensaje privado', mensaje);
- })
+ });
