@@ -8,10 +8,11 @@ class Usuarios {
 
 
     // Agregando persona al chat
-    agregarPersona(id, nombre) {
+    agregarPersona(id, nombre, sala) {
         let persona = {
             id,
-            nombre
+            nombre,
+            sala
         };
 
         this.personas.push(persona);
