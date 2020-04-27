@@ -24,7 +24,22 @@ io.on('connection', (client) => {
 
         let personas = usuarios.agregarPersona(client.id, data.nombre);
 
+        // Evento de conexión de persona (devuelve todas las personas)
+        client.broadcast.emit('listaPersona', usuarios.getPersonas());
+
         callback(personas);
+    });
+
+
+    // Desconexión
+    client.on('disconnect', () => {
+        let personaBorrada = usuarios.borrarPersona(client.id);
+
+        // Emitiendo mensaje de desconexión deusuario
+        client.broadcast.emit('crearMensaje', { usuario: 'Adminsitrador', mensaje: `${ personaBorrada.nombre } abandonó el chat` });
+
+        // Evento de conexión de persona (devuelve todas las personas)
+        client.broadcast.emit('listaPersona', usuarios.getPersonas());
     });
 
 });
