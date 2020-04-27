@@ -39,7 +39,9 @@ class Usuarios {
 
     // Retornando personas por sala
     getPersonasPorSala(sala) {
-        // ....
+        let personasEnSala = this.personas.filter(persona => persona.sala === sala);
+
+        return personasEnSala;
     }
 
     // Eliminar personas del arreglo de personas (sale del chat, se desconecta)

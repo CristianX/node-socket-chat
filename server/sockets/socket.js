@@ -18,7 +18,6 @@ io.on('connection', (client) => {
 
     client.on('entrarChat', (data, callback) => {
 
-        console.log(data);
 
         if (!data.nombre || !data.sala) {
             return callback({
@@ -33,9 +32,9 @@ io.on('connection', (client) => {
         let personas = usuarios.agregarPersona(client.id, data.nombre, data.sala);
 
         // Evento de conexión de persona (devuelve todas las personas)
-        client.broadcast.emit('listaPersona', usuarios.getPersonas());
+        client.broadcast.to(data.sala).emit('listaPersona', usuarios.getPersonasPorSala(data.sala));
 
-        callback(personas);
+        callback(usuarios.getPersonasPorSala(data.sala));
     });
 
     // Escuchando mensaje de usuario
@@ -46,8 +45,8 @@ io.on('connection', (client) => {
 
         let mensaje = crearMensaje(persona.nombre, data.mensaje);
 
-        // Emitiendo a todo el mundo
-        client.broadcast.emit('crearMensaje', mensaje);
+        // Emitiendo a todo el mundo en esa sala
+        client.broadcast.to(persona.sala).emit('crearMensaje', mensaje);
 
     });
 
@@ -55,11 +54,11 @@ io.on('connection', (client) => {
     client.on('disconnect', () => {
         let personaBorrada = usuarios.borrarPersona(client.id);
 
-        // Emitiendo mensaje de desconexión deusuario
-        client.broadcast.emit('crearMensaje', crearMensaje('Administrador', `${personaBorrada.nombre} salió`));
+        // Emitiendo mensaje de desconexión de usuario a la sala
+        client.broadcast.to(personaBorrada.sala).emit('crearMensaje', crearMensaje('Administrador', `${personaBorrada.nombre} salió`));
 
-        // Evento de conexión de persona (devuelve todas las personas)
-        client.broadcast.emit('listaPersona', usuarios.getPersonas());
+        // Evento de conexión de persona (devuelve todas las personas de la sala)
+        client.broadcast.to(personaBorrada.sala).emit('listaPersona', usuarios.getPersonasPorSala(personaBorrada.sala));
     });
 
     // Mensajes privados
