@@ -4,6 +4,9 @@ const { io } = require('../server');
 // Clases
 const { Usuarios } = require('../classes/usuarios');
 
+// Utilidades de mensajes de chat
+const { crearMensaje } = require('../utilidades/utilidades');
+
 
 const usuarios = new Usuarios();
 
@@ -30,13 +33,25 @@ io.on('connection', (client) => {
         callback(personas);
     });
 
+    // Escuchando mensaje de usuario
+    client.on('crearMensaje', (data) => {
+
+        // Obteniendo persona por id
+        let persona = usuarios.getPersona(client.id);
+
+        let mensaje = crearMensaje(persona.nombre, data.mensaje);
+
+        // Emitiendo a todo el mundo
+        client.broadcast.emit('crearMensaje', mensaje);
+
+    });
 
     // Desconexión
     client.on('disconnect', () => {
         let personaBorrada = usuarios.borrarPersona(client.id);
 
         // Emitiendo mensaje de desconexión deusuario
-        client.broadcast.emit('crearMensaje', { usuario: 'Adminsitrador', mensaje: `${ personaBorrada.nombre } abandonó el chat` });
+        client.broadcast.emit('crearMensaje', crearMensaje('Administrador', `${personaBorrada.nombre} salió`));
 
         // Evento de conexión de persona (devuelve todas las personas)
         client.broadcast.emit('listaPersona', usuarios.getPersonas());

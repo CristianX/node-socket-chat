@@ -32,13 +32,13 @@
  });
 
  // Enviar información, se puede enviar booleans, string, etc pero no es recomendable, lo mejor es mandar un objeto
- socket.emit('enviarMensaje', {
-     usuario: 'Cristian',
-     mensaje: 'Hola mundo'
- }, function(resp) {
-     // console.log('Se disparó el callback');
-     console.log('Respuesta server: ', resp);
- });
+ //  socket.emit('crearMensaje', {
+ //      usuario: 'Cristian',
+ //      mensaje: 'Hola mundo'
+ //  }, function(resp) {
+ //      // console.log('Se disparó el callback');
+ //      console.log('Respuesta server: ', resp);
+ //  });
 
 
  // Escuchando información del server
