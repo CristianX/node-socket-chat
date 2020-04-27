@@ -75,7 +75,10 @@ formEnviar.on('submit', function(evento) {
 
         // focus para que el cursor se quede ahi aunque se toque el boton
         txtMensaje.val('').focus();
-        renderizarMensajes(mensaje);
+
+        // true para decir que hyo envio el mensaje
+        renderizarMensajes(mensaje, true);
+        scrollBottom();
     });
 
 
@@ -83,19 +86,70 @@ formEnviar.on('submit', function(evento) {
 
 // Renderizar mensajes para que aparezcan en el html
 
-function renderizarMensajes(mensaje) {
+function renderizarMensajes(mensaje, yo) {
 
     var html = '';
 
-    html += '<li class="animated fadeIn">';
-    html += '   <div class="chat-img"><img src="assets/images/users/1.jpg" alt="user" /></div>';
-    html += '   <div class="chat-content">';
-    html += '       <h5>' + mensaje.nombre + '</h5>';
-    html += '       <div class="box bg-light-info">' + mensaje.mensaje + '</div>';
-    html += '   </div>';
-    html += '   <div class="chat-time">10:56 am</div>';
-    html += '</li>';
+    // Construyendo hora
+    var fecha = new Date(mensaje.fecha);
+    var hora = fecha.getHours() + ' : ' + fecha.getMinutes();
+
+    // Reconocer si administrador envia el mensaje
+    var adminClass = 'info';
+    if (mensaje.nombre === 'Administrador') {
+        adminClass = 'danger';
+    }
+
+
+    // Identificar si soy yo
+
+    if (yo) {
+        html += '<li class="reverse">';
+        html += '    <div class="chat-content">';
+        html += '        <h5>' + mensaje.nombre + '</h5>';
+        html += '        <div class="box bg-light-inverse">' + mensaje.mensaje + '</div>';
+        html += '    </div>';
+        html += '    <div class="chat-img"><img src="assets/images/users/5.jpg" alt="user" /></div>';
+        html += '    <div class="chat-time">' + hora + '</div>';
+        html += '</li>';
+    } else {
+        html += '<li class="animated fadeIn">';
+
+        // Quitando la imagen si es administrador
+        if (mensaje.nombre !== "Administrador") {
+
+            html += '   <div class="chat-img"><img src="assets/images/users/1.jpg" alt="user" /></div>';
+        }
+
+        html += '   <div class="chat-content">';
+        html += '       <h5>' + mensaje.nombre + '</h5>';
+        html += '       <div class="box bg-light-' + adminClass + '">' + mensaje.mensaje + '</div>';
+        html += '   </div>';
+        html += '   <div class="chat-time">' + hora + '</div>';
+        html += '</li>';
+    }
+
+
+
 
     divChatbox.append(html);
 
+}
+
+// Calcula si hay que mantener el scroll abajo o donde está en ese momento
+function scrollBottom() {
+
+    // selectors
+    var newMessage = divChatbox.children('li:last-child');
+
+    // heights
+    var clientHeight = divChatbox.prop('clientHeight');
+    var scrollTop = divChatbox.prop('scrollTop');
+    var scrollHeight = divChatbox.prop('scrollHeight');
+    var newMessageHeight = newMessage.innerHeight();
+    var lastMessageHeight = newMessage.prev().innerHeight() || 0;
+
+    if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+        divChatbox.scrollTop(scrollHeight);
+    }
 }

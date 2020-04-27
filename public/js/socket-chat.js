@@ -49,7 +49,11 @@
  //  Recibiendo mensajes de otro usuario de la sal
  socket.on('crearMensaje', function(mensaje) {
      //  console.log('Servidor', mensaje);
-     renderizarMensajes(mensaje);
+     renderizarMensajes(mensaje, false);
+     //  false para indicar que yo no envio el mensaje
+
+     //  Scroll
+     scrollBottom();
  });
 
  //  Escuchar cambios de usuarios

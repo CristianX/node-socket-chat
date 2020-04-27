@@ -34,6 +34,9 @@ io.on('connection', (client) => {
         // Evento de conexión de persona (devuelve todas las personas)
         client.broadcast.to(data.sala).emit('listaPersona', usuarios.getPersonasPorSala(data.sala));
 
+        // Emitiendo mensaje de conexión de usuario a la sala
+        client.broadcast.to(data.sala).emit('crearMensaje', crearMensaje('Administrador', `${data.nombre} se unió`));
+
         callback(usuarios.getPersonasPorSala(data.sala));
     });
 
