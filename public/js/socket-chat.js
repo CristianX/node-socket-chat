@@ -46,8 +46,10 @@
 
 
  // Escuchando información del server
+ //  Recibiendo mensajes de otro usuario de la sal
  socket.on('crearMensaje', function(mensaje) {
-     console.log('Servidor', mensaje);
+     //  console.log('Servidor', mensaje);
+     renderizarMensajes(mensaje);
  });
 
  //  Escuchar cambios de usuarios

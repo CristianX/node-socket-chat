@@ -38,7 +38,7 @@ io.on('connection', (client) => {
     });
 
     // Escuchando mensaje de usuario
-    client.on('crearMensaje', (data) => {
+    client.on('crearMensaje', (data, callback) => {
 
         // Obteniendo persona por id
         let persona = usuarios.getPersona(client.id);
@@ -47,6 +47,8 @@ io.on('connection', (client) => {
 
         // Emitiendo a todo el mundo en esa sala
         client.broadcast.to(persona.sala).emit('crearMensaje', mensaje);
+
+        callback(mensaje);
 
     });
 
